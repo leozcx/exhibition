@@ -1,0 +1,28 @@
+{
+	"css":["dijit/themes/dijit.css"],
+	"widgets":[
+	{
+		"category": "Basic Widget",
+		"items": [
+			{
+				"name": "Button",
+				"description": "This is a dijit button.",
+				"generator": "generator/button"
+			},
+			{
+				"name": "Input",
+				"generator": "generator/input"
+			}
+		]
+	},
+	{
+		"category": "Dialog",
+		"items": [
+			{
+				"name": "dialog1",
+				"generator": "generator/dialog"
+			}
+		]
+	}
+]
+}

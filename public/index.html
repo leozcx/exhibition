@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Tutorial: Hello Dojo!</title>
+<title>Widgets exhibition</title>
 <link rel="stylesheet" href="/dijit/themes/claro/claro.css">
 <style>
 html, body {
@@ -23,17 +23,20 @@ html, body {
 			"dojo/domReady!" ], function(xhr, array, BorderContainer, ContentPane,
 			TabContainer, AccordionContainer, AccordionPane, StackContainer,
 			domConstruct, on) {
-		xhr("/widget/a/widgets.json", {
+		xhr("/widget/widgets.json", {
 			handleAs : "json"
 		}).then(function(data) {
-			array.forEach(data, function(category) {
+			array.forEach(data.css, function(css) {
+				domConstruct.create("link", {ref: "stylesheet", href: css}, document.head);
+			}) ;
+			array.forEach(data.widgets, function(category) {
 				var ap = new AccordionPane({
 					title : category.category,
 					region : "left"
 				});
 				ac1.addChild(ap);
 				var div = domConstruct.create("div");
-				ap.set('content', div)
+				ap.set('content', div);
 				array.forEach(category.items, function(item) {
 					var itemDiv = domConstruct.create("div", {innerHTML: item.name, style: {cursor: "pointer"}});
 					div.appendChild(itemDiv);
@@ -42,13 +45,16 @@ html, body {
 							//add prefix "widget" to tell server it will fetch the widget from remote
 							var mid = "widget/"+item.generator;
 							require([ mid ], function(gen) {
-								var holder = domConstruct.create("div");
+								var contentDiv = domConstruct.create("div");
 								var tc1 = new ContentPane({
 									region : "center",
 									title : item.name
 								});
-								tc1.set('content', holder);
+								tc1.set('content', contentDiv);
 								sc.addChild(tc1);
+								contentDiv.appendChild(domConstruct.create("div", {innerHTML: item.description || "", style: {margin: "5px"}}));
+								var holder = domConstruct.create("div");
+								contentDiv.appendChild(holder);
 								var a = new gen({holder: holder});
 								a.init(holder);
 								map[item.name] = tc1;
@@ -61,8 +67,12 @@ html, body {
 				
 			});
 		}, function(err) {
-			console.log(err)
-			// Handle the error condition
+			var tc = new ContentPane({
+				region : "center",
+				title : "Error",
+				content: domConstruct.create("span", {innerHTML: err.response.text})
+			});
+			ac1.addChild(tc);
 		}, function(evt) {
 			// Handle a progress event from the request if the
 			// browser supports XHR2
@@ -91,19 +101,6 @@ html, body {
 		document.body.appendChild(bc.domNode);
 		bc.startup();
 	});
-	/* require([ "dijit/form/Button", "dojo/dom", "dojo/domReady!" ],
-			function(Button, dom) {
-				// Create a button programmatically:
-				var myButton = new Button({
-					label : "Click me!",
-					onClick : function() {
-						require([ 'users/button.js' ], function(dom) {
-							var a = new dom();
-							a.init();
-						});
-					}
-				}, "progButtonNode").startup();
-			}); */
 </script>
 </head>
 <body class="claro">
