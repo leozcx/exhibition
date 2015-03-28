@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tutorial: Hello Dojo!</title>
+<link rel="stylesheet" href="/dijit/themes/claro/claro.css">
+<style>
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+</style>
+<!-- load Dojo -->
+<script src="/dojo/dojo.js"
+	data-dojo-config="async: true, parseOnLoad: true"></script>
+
+<script>
+	require([ "dojo/request/xhr", "dojo/_base/array", "dijit/layout/BorderContainer",
+			"dijit/layout/ContentPane", "dijit/layout/TabContainer",
+			"dijit/layout/AccordionContainer", "dijit/layout/AccordionPane",
+			"dijit/layout/StackContainer", "dojo/dom-construct", "dojo/on",
+			"dojo/domReady!" ], function(xhr, array, BorderContainer, ContentPane,
+			TabContainer, AccordionContainer, AccordionPane, StackContainer,
+			domConstruct, on) {
+		xhr("/widget/a/widgets.json", {
+			handleAs : "json"
+		}).then(function(data) {
+			array.forEach(data, function(category) {
+				var ap = new AccordionPane({
+					title : category.category,
+					region : "left"
+				});
+				ac1.addChild(ap);
+				var div = domConstruct.create("div");
+				ap.set('content', div)
+				array.forEach(category.items, function(item) {
+					var itemDiv = domConstruct.create("div", {innerHTML: item.name, style: {cursor: "pointer"}});
+					div.appendChild(itemDiv);
+					on(itemDiv, 'click', function() {
+						if(!map[item.name]) {
+							//add prefix "widget" to tell server it will fetch the widget from remote
+							var mid = "widget/"+item.generator;
+							require([ mid ], function(gen) {
+								var holder = domConstruct.create("div");
+								var tc1 = new ContentPane({
+									region : "center",
+									title : item.name
+								});
+								tc1.set('content', holder);
+								sc.addChild(tc1);
+								var a = new gen({holder: holder});
+								a.init(holder);
+								map[item.name] = tc1;
+								sc.selectChild(map[item.name]);
+							});
+						} else
+							sc.selectChild(map[item.name]);
+					});
+				});
+				
+			});
+		}, function(err) {
+			console.log(err)
+			// Handle the error condition
+		}, function(evt) {
+			// Handle a progress event from the request if the
+			// browser supports XHR2
+		});
+		// create a BorderContainer as the top widget in the hierarchy
+		var bc = new BorderContainer({
+			style : "height: 100%; width: 100%;"
+		});
+
+		// create a ContentPane as the left pane in the BorderContainer
+		var ac1 = new AccordionContainer({
+			region : "leading",
+			style : {
+				width : "200px"
+			}
+		});
+		bc.addChild(ac1);
+
+		var sc = new StackContainer({
+			region : "center"
+		});
+		bc.addChild(sc);
+		var map = {};
+
+		// put the top level widget into the document, and then call startup()
+		document.body.appendChild(bc.domNode);
+		bc.startup();
+	});
+	/* require([ "dijit/form/Button", "dojo/dom", "dojo/domReady!" ],
+			function(Button, dom) {
+				// Create a button programmatically:
+				var myButton = new Button({
+					label : "Click me!",
+					onClick : function() {
+						require([ 'users/button.js' ], function(dom) {
+							var a = new dom();
+							a.init();
+						});
+					}
+				}, "progButtonNode").startup();
+			}); */
+</script>
+</head>
+<body class="claro">
+</body>
+</html>
