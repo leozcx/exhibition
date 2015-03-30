@@ -1,5 +1,5 @@
 {
-	"css":["dijit/themes/dijit.css"],
+	"css":["https://172.20.41.4/stylesOneUI/index.css", "https://172.20.41.4/stylesOneUI/oneui/index.css"],
 	"widgets":[
 	{
 		"category": "Basic Widget",

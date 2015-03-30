@@ -1,10 +1,13 @@
-define(['dojo/_base/declare', 'dijit/form/Button', 'dijit/Dialog'], function(declare, Button, Dialog) {
+define(['dojo/_base/declare', 'dijit/form/Button', 'widget/javascript/paas/widgets/ConfirmDialogExt'], function(declare, Button, Dialog) {
 
 	var m = declare([], {
 		init : function(holder) {
 			var myDialog = new Dialog({
 				title : "Programmatic Dialog Creation",
-				style : "width: 300px"
+				style : "width: 300px",
+				widgets_confirmdialog_yes : "YES",
+				widgets_confirmdialog_no : "NO",
+				widgets_confirmdialog_title: "title"
 			});
 			var myButton = new Button({
 				label : "Show me!",
@@ -18,4 +21,3 @@ define(['dojo/_base/declare', 'dijit/form/Button', 'dijit/Dialog'], function(dec
 
 	return m;
 });
-

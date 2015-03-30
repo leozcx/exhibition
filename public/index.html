@@ -23,11 +23,27 @@ html, body {
 			"dojo/domReady!" ], function(xhr, array, BorderContainer, ContentPane,
 			TabContainer, AccordionContainer, AccordionPane, StackContainer,
 			domConstruct, on) {
-		xhr("/widget/widgets.json", {
+				
+		paas = {
+			Base: {
+				messages: {
+					widgets_confirmdialog_title: "title",
+					widgets_confirmdialog_yes: "yes",
+					widgets_confirmdialog_no: "no",
+					confirmMsg: "confirm"
+				}
+			}
+		};
+		xhr("widgets.json", {
 			handleAs : "json"
 		}).then(function(data) {
 			array.forEach(data.css, function(css) {
-				domConstruct.create("link", {ref: "stylesheet", href: css}, document.head);
+				var link = document.createElement('link');
+        		link.href = css;
+        		link.rel = 'stylesheet';
+        		link.type = 'text/css';
+        		document.head.appendChild(link);
+				// domConstruct.create("link", {ref: "stylesheet", href: css, type:"text/css"}, document.head);
 			}) ;
 			array.forEach(data.widgets, function(category) {
 				var ap = new AccordionPane({
@@ -43,7 +59,7 @@ html, body {
 					on(itemDiv, 'click', function() {
 						if(!map[item.name]) {
 							//add prefix "widget" to tell server it will fetch the widget from remote
-							var mid = "widget/"+item.generator;
+							var mid = item.generator;
 							require([ mid ], function(gen) {
 								var contentDiv = domConstruct.create("div");
 								var tc1 = new ContentPane({
@@ -103,6 +119,6 @@ html, body {
 	});
 </script>
 </head>
-<body class="claro">
+<body class="oneui">
 </body>
 </html>

@@ -24,7 +24,7 @@ app.use('/dijit', express.static('public/javascripts/dijit'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/widget*', widget);
+app.use(['/paas*', '/builder*', '/generator/*', '/javascript*', '/widget*'], widget);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
